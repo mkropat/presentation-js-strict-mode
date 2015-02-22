@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>JavaScript: The Why And How Of Strict Mode</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css">
+  </head>
+  <body>
+    <article>
+      <section>
+        <h1>JavaScript: The Why And How Of Strict Mode</h1>
+        <p>By this guy:</p>
+        <p><a href="http://twitter.com/MichaelKropat">@MichaelKropat</a></p>
+      </section>
+      <section>
+        <h1>JavaScript: The Why And How Of Strict Mode <strike>+ Linting</strike></h1>
+        <p>By this guy:</p>
+        <p><a href="http://twitter.com/MichaelKropat">@MichaelKropat</a></p>
+      </section>
+      <section>
+        <h2>JavaScript: Serious Business</h2>
+        <!-- slide contents redacted-->
+      </section>
+      <section>
+        <h2>Spot the bug</h2>
+        <pre><code class="language-javascript">// min: return the smallest element in arr
+function min(arr) {
+  var result = Infinity;
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] < result) {
+      reuslt = arr[i];
+    }
+  }
+  return result;
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Spot the bug</h2>
+        <pre><code class="language-javascript">// min: return the smallest element in arr
+function min(arr) {
+  var result = Infinity;
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] < result) {
+      reuslt = arr[i]; // <== RIGHT HERE
+    }
+  }
+  return result;
+}
+</code></pre>
+      </section>
+      <section>
+        <h3><em>Without</em> Strict Mode</h3>
+        <pre><code class="language-javascript">> min([3,1,2])
+Infinity
+</code></pre>
+      </section>
+      <section>
+        <h3><em>With</em> Strict Mode</h3>
+        <pre><code class="language-javascript">> min([3,1,2])
+Uncaught ReferenceError: reuslt is not defined
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Strict Mode</h2>
+        <ul>
+          <li>Catches mistakes at runtime</li>
+          <li>Throws errors on bad behavior</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Let's try one more</h2>
+        <pre><code class="language-javascript">var isNodejs = (typeof module) !== 'undefined' &&
+    (typeof module.exports) !== 'undefined';
+if (isNodejs) {
+  function open(filename) {
+    return require('fs').readFileSync(filename);
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h3><em>Without</em> Strict Mode</h3>
+        <p>(In a browser)</p>
+        <pre><code class="language-javascript">> typeof readFile
+"function"
+> readFile('somefile')
+Uncaught ReferenceError: require is not defined
+</code></pre>
+      </section>
+      <section>
+        <h3><em>With</em> Strict Mode</h3>
+        <pre><code class="language-javascript">Uncaught SyntaxError: In strict mode code,
+functions can only be declared at top level or
+immediately within another function.
+> typeof readFile
+"undefined"
+</code></pre>
+      </section>
+      <section>
+        <h2>Some other things you can't do in strict mode</h2>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">undefined = 123;</code></pre>
+          </li>
+          <li>
+            <pre><code class="language-javascript">delete Object.prototype;</code></pre>
+          </li>
+          <li>
+            <pre><code class="language-javascript">var obj = { name: 'foo', name: 'bar' };</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>Strict Mode Comes In<br/>2 Forms</h2>
+      </section>
+      <section>
+        <ul>
+          <li>Script Form</li>
+          <li>
+            <pre><code class="language-javascript">'use strict';
+
+var a = 123;
+</code></pre>
+          </li>
+          <li>Function Form</li>
+          <li>
+            <pre><code class="language-javascript">function foo() {
+  'use strict';
+  
+  return 123;
+}
+</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>Script Form Has One Big Gotcha</h2>
+      </section>
+      <section>
+        <ul>
+          <li>Picture 2 Files</li>
+          <li>strict.js
+            <pre><code class="language-javascript">'use strict';
+
+var a = 123;</code></pre>
+          </li>
+          <li>non-strict.js
+            <pre><code class="language-javascript">b = 456;
+</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Let's concatentate them</h3>
+        <pre><code class="language-javascript">'use strict';
+
+var a = 123;
+
+b = 456;
+</code></pre>
+      </section>
+      <section>
+        <h3>Let's concatentate them</h3>
+        <pre><code class="language-javascript">'use strict';
+
+var a = 123;
+
+b = 456; // <== error in strict mode
+</code></pre>
+      </section>
+      <section>
+        <h3>Conclusion: Use Function Form</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">(function () {
+  'use strict';
+  
+  // a bunch of code
+  
+  window.a = 123;
+})();
+</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Exception: Unit Tests</h3>
+        <ul>
+          <li>Do you concat your test files?</li>
+          <li>No?</li>
+          <li>Script Form is OK</li>
+        </ul>
+      </section>
+      <section>
+        <h4>To recap...</h4>
+      </section>
+      <section class="dangerous"></section>
+    </article>
+    <script src="build/build.js"></script>
+  </body>
+</html>
