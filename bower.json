@@ -1,0 +1,7 @@
+{
+  "name": "presentation-javascript-the-why-and-how-of-strict-mode-linting",
+  "version": "0.0.0",
+  "dependencies": {
+    "prism": "gh-pages"
+  }
+}

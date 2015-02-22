@@ -1,0 +1,205 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+    title JavaScript: The Why And How Of Strict Mode
+
+    link(rel='stylesheet', type='text/css', href='build/build.css')
+
+  body
+
+    article
+
+      section
+        h1 JavaScript: The Why And How Of Strict Mode
+        p By this guy:
+        p
+          a(href='http://twitter.com/MichaelKropat') @MichaelKropat
+
+      section
+        h1 JavaScript: The Why And How Of Strict Mode <strike>+ Linting</strike>
+        p By this guy:
+        p
+          a(href='http://twitter.com/MichaelKropat') @MichaelKropat
+
+      section
+        h2 JavaScript: Serious Business
+        // slide contents redacted
+
+      section
+        h2 Spot the bug
+        pre
+          code.language-javascript.
+            // min: return the smallest element in arr
+            function min(arr) {
+              var result = Infinity;
+              for (var i = 0; i < arr.length; i++) {
+                if (arr[i] < result) {
+                  reuslt = arr[i];
+                }
+              }
+              return result;
+            }
+
+      section
+        h2 Spot the bug
+        pre
+          code.language-javascript.
+            // min: return the smallest element in arr
+            function min(arr) {
+              var result = Infinity;
+              for (var i = 0; i < arr.length; i++) {
+                if (arr[i] < result) {
+                  reuslt = arr[i]; // <== RIGHT HERE
+                }
+              }
+              return result;
+            }
+
+      section
+        h3 <em>Without</em> Strict Mode
+        pre
+          code.language-javascript.
+            > min([3,1,2])
+            Infinity
+
+      section
+        h3 <em>With</em> Strict Mode
+        pre
+          code.language-javascript.
+            > min([3,1,2])
+            Uncaught ReferenceError: reuslt is not defined
+
+      section
+        h2.bullet Strict Mode
+        ul
+          li Catches mistakes at runtime
+          li Throws errors on bad behavior
+
+      section
+        h2 Let's try one more
+        pre
+          code.language-javascript.
+            var isNodejs = (typeof module) !== 'undefined' &&
+                (typeof module.exports) !== 'undefined';
+            if (isNodejs) {
+              function open(filename) {
+                return require('fs').readFileSync(filename);
+              }
+            }
+
+      section
+        h3 <em>Without</em> Strict Mode
+        p (In a browser)
+        pre
+          code.language-javascript.
+            > typeof readFile
+            "function"
+            > readFile('somefile')
+            Uncaught ReferenceError: require is not defined
+
+      section
+        h3 <em>With</em> Strict Mode
+        pre
+          code.language-javascript.
+            Uncaught SyntaxError: In strict mode code,
+            functions can only be declared at top level or
+            immediately within another function.
+            > typeof readFile
+            "undefined"
+
+      section
+        h2 Some other things you can't do in strict mode
+        ul
+          li: pre: code.language-javascript undefined = 123;
+          li: pre: code.language-javascript delete Object.prototype;
+          li: pre: code.language-javascript var obj = { name: 'foo', name: 'bar' };
+
+      section
+        h2 Strict Mode Comes In<br/>2 Forms
+
+      section
+        ul
+          li Script Form
+          li
+            pre
+              code.language-javascript.
+                'use strict';
+
+                var a = 123;
+
+          li Function Form
+          li
+            pre
+              code.language-javascript.
+                function foo() {
+                  'use strict';
+
+                  return 123;
+                }
+
+      section
+        h2 Script Form Has One Big Gotcha
+
+      section
+        ul
+          li Picture 2 Files
+          li strict.js
+            pre
+              code.language-javascript.
+                'use strict';
+
+                var a = 123;
+          li non-strict.js
+            pre
+              code.language-javascript.
+                b = 456;
+
+      section
+        h3 Let's concatentate them
+        pre
+              code.language-javascript.
+                'use strict';
+
+                var a = 123;
+
+                b = 456;
+
+      section
+        h3 Let's concatentate them
+        pre
+              code.language-javascript.
+                'use strict';
+
+                var a = 123;
+
+                b = 456; // <== error in strict mode
+
+      section
+        h3 Conclusion: Use Function Form
+        ul
+          li
+            pre
+              code.language-javascript.
+                (function () {
+                  'use strict';
+
+                  // a bunch of code
+
+                  window.a = 123;
+                })();
+
+      section
+        h3 Exception: Unit Tests
+        ul
+          li Do you concat your test files?
+          li No?
+          li Script Form is OK
+
+      section
+        h4 To recap...
+
+      section.dangerous
+
+    script(src='build/build.js')
